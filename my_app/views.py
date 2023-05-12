@@ -30,7 +30,12 @@ def student_create(request):
         serializer.save()
         return Response({
             'message': 'Instance created successfully'
-        })
+        }, status = status.HTTP_201_CREATED)
+    else:
+        return Response({
+            'message': 'Can not be created',
+            'data': serializer.data
+        }, status = status.HTTP_400_BAD_REQUEST)
 
 
 
