@@ -1,5 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .models import Student
+from .serializers import StudentSerializer
+from rest_framework import status
 
 @api_view()
 def home(request):
@@ -8,6 +11,26 @@ def home(request):
             'message': 'Hello World'
         }
     )
+
+@api_view(['GET'])
+def student_list(request):
+    students = Student.objects.all()
+    serializer = StudentSerializer(instance=students, many=True)
+    # print(serializer)
+    # print(dir(serializer))
+    # print(serializer.data)
+    print(students)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def student_create(request):
+    serializer = StudentSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'message': 'Instance created successfully'
+        })
 
 
 
