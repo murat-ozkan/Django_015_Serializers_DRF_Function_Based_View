@@ -43,6 +43,14 @@ def student_create(request):
             'data': serializer.data
         }, status = status.HTTP_400_BAD_REQUEST)
 
+@api_view(["GET"])
+def student_detail(request, pk):
+    student = Student.objects.all(id=pk)
+    serializer = StudentSerializer(instance=student)
+    return Response(serializer.data)
+
+
+
 
 
 # from django.http import HttpResponse
