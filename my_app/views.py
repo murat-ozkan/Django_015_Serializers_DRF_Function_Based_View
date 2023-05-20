@@ -1,11 +1,9 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 from .models import Student
 from .serializers import StudentSerializer
-
-from rest_framework import status
-from rest_framework.response import Response
-
 
 
 @api_view()
@@ -18,12 +16,12 @@ def home(request):
 
 @api_view(['GET'])
 def student_list(request):
-    students = Student.objects.all()
-    serializer = StudentSerializer(instance=students, many=True)
+    student = Student.objects.all()
+    serializer = StudentSerializer(instance=student, many=True)
     # print(serializer)
     # print(dir(serializer))
     # print(serializer.data)
-    print(students)
+    print(student)
     return Response(serializer.data)
 
 
@@ -45,14 +43,31 @@ def student_create(request):
 
 @api_view(["GET"])
 def student_detail(request, pk):
-    student = Student.objects.all(id=pk)
-    serializer = StudentSerializer(instance=student)
+    # student = Student.objects.get(id=pk)
+    student = get_object_or_404(Student, id=pk) # hata dönmüyor, 404, "detail": "not found" dönüyor
+    # serializer = StudentSerializer(instance=student)
+    serializer = StudentSerializer(student)
     return Response(serializer.data)
 
+@api_view(["PUT"])
+def student_update(request, pk):
+    student = Student.objects.get(id=pk)
+    print(StudentSerializer.instance)
+    serializer = StudentSerializer(instance=student, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'message': 'Instance updated successfully'
+        }, status = status.HTTP_202_ACCEPTED)
+    else:
+        return Response({
+            'message': 'Can not be updated. Please check your data.',
+            'data': serializer.data
+        }, status = status.HTTP_400_BAD_REQUEST)
 
 
 
-
+# *********************************************************************
 # from django.http import HttpResponse
 # from rest_framework.response import Response
 # from rest_framework.decorators import api_view

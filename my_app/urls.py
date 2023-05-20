@@ -4,6 +4,7 @@ from .views import (
     home,
     student_list,
     student_create,
+    student_detail,
 )
 
 urlpatterns = [
