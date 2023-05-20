@@ -2,7 +2,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Student
 from .serializers import StudentSerializer
+
 from rest_framework import status
+from rest_framework.response import Response
+
+
 
 @api_view()
 def home(request):
@@ -26,6 +30,8 @@ def student_list(request):
 @api_view(['POST'])
 def student_create(request):
     serializer = StudentSerializer(data=request.data)
+    # print(Response.status_code)
+    # print(status)
     if serializer.is_valid():
         serializer.save()
         return Response({
@@ -36,7 +42,6 @@ def student_create(request):
             'message': 'Can not be created',
             'data': serializer.data
         }, status = status.HTTP_400_BAD_REQUEST)
-
 
 
 
